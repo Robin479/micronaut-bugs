@@ -40,7 +40,7 @@ public class RunawayClientMetricsTest {
 		RunawayClientMetricsTest.log.trace("prometheus scrape:\n{}", scrape.body());
 		
 		Assertions.assertFalse(
-			scrape.body().replaceAll("^(?!http_client_requests_.*).*$", "").contains(greetings.getPath()),
+			scrape.body().replaceAll("(?m)^(?!http_client_requests_).*?$", "").contains(greetings.getPath()),
 			"manually defined URI paths should not appear in http.client.requests metrics"
 		);
 	}
@@ -56,7 +56,7 @@ public class RunawayClientMetricsTest {
 		RunawayClientMetricsTest.log.trace("prometheus scrape:\n{}", scrape.body());
 		
 		Assertions.assertFalse(
-			scrape.body().replaceAll("^(?!http_client_requests_.*).*$", "").contains(parameter),
+			scrape.body().replaceAll("(?m)^(?!http_client_requests_).*?$", "").contains(parameter),
 			"templated parameter value should not appear in http.client.requests metrics"
 		);
 	}

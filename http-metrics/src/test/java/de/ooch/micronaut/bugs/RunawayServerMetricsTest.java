@@ -40,7 +40,7 @@ public class RunawayServerMetricsTest {
 		RunawayServerMetricsTest.log.trace("prometheus scrape:\n{}", scrape.body());
 		
 		Assertions.assertFalse(
-			scrape.body().replaceAll("^(?!http_server_requests_.*).*$", "").contains(preflight.getUri().getPath()),
+			scrape.body().replaceAll("(?m)^(?!http_server_requests_).*?$", "").contains(preflight.getUri().getPath()),
 			"input from user requests (including their URI) should not appear in http.server.requests metrics"
 		);
 	}
