@@ -20,11 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 @MicronautTest(application = Application.class, environments = { "test", "debug" })
 public class RunawayClientMetricsTest {
 	@Inject
-	@Client("/")
-	private HttpClient rawClient;
+	private GreetingsController controller;
 	
 	@Inject
 	private GreetingsClient templatedClient;
+	
+	@Inject
+	@Client("/")
+	private HttpClient rawClient;
 	
 	@Test
 	public void testRawClientDoesNotProduceRunawayMetrics() {

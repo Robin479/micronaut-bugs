@@ -8,8 +8,6 @@ import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MutableHttpRequest;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -19,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @MicronautTest(application = Application.class, environments = { "test", "debug" })
 public class RunawayServerMetricsTest {
+	@Inject
+	private GreetingsController controller;
+	
 	@Inject
 	@Client("/")
 	private HttpClient client;
@@ -42,11 +43,5 @@ public class RunawayServerMetricsTest {
 			scrape.body().replaceAll("^(?!http_server_requests_.*).*$", "").contains(preflight.getUri().getPath()),
 			"input from user requests (including their URI) should not appear in http.server.requests metrics"
 		);
-	}
-	
-	@Client("/")
-	public static interface GreetingsClient {
-		@Get("/greetings/{name}")
-		public String sayHallo(@PathVariable("name") String name);
 	}
 }
