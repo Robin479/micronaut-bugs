@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>de.ooch</groupId>
+	<artifactId>micronaut-bugs</artifactId>
+	<version>0.0.0-SNAPSHOT</version>
+
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>http-metrics</module>
+	</modules>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<maven.compiler.source>${version.java}</maven.compiler.source>
+		<maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+
+		<version.java>11</version.java>
+		<version.lombok>1.18.22</version.lombok>
+		<version.micronaut>3.4.3</version.micronaut>
+
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-bom</artifactId>
+				<version>2.17.2</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<!--
+					NOTE: Micronaut must always be the last dependency,
+					in order to avoid unintended 3rd-party versions!
+				-->
+				<groupId>io.micronaut</groupId>
+				<artifactId>micronaut-bom</artifactId>
+				<version>${version.micronaut}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>application.yaml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>3.0.0-M3</version>
+					<executions>
+						<execution>
+							<id>default-enforce</id>
+							<phase>initialize</phase>
+							<goals>
+								<goal>enforce</goal>
+							</goals>
+							<configuration>
+								<rules>
+									<requireMavenVersion>
+										<version>3.2.5</version>
+									</requireMavenVersion>
+								</rules>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.10.1</version>
+					<configuration>
+						<forceJavacCompilerUse>true</forceJavacCompilerUse>
+						<useIncrementalCompilation>true</useIncrementalCompilation>
+						<annotationProcessorPaths
+							combine.self="override">
+							<annotationProcessorPath>
+								<groupId>io.micronaut</groupId>
+								<artifactId>micronaut-http-validation</artifactId>
+								<version>${version.micronaut}</version>
+							</annotationProcessorPath>
+							<annotationProcessorPath>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+								<version>${version.lombok}</version>
+							</annotationProcessorPath>
+							<annotationProcessorPath>
+								<groupId>io.micronaut</groupId>
+								<artifactId>micronaut-inject-java</artifactId>
+								<version>${version.micronaut}</version>
+							</annotationProcessorPath>
+							<annotationProcessorPath>
+								<groupId>io.micronaut</groupId>
+								<artifactId>micronaut-validation</artifactId>
+								<version>${version.micronaut}</version>
+							</annotationProcessorPath>
+							<annotationProcessorPath>
+								<groupId>io.micronaut</groupId>
+								<artifactId>micronaut-graal</artifactId>
+								<version>${version.micronaut}</version>
+							</annotationProcessorPath>
+						</annotationProcessorPaths>
+						<compilerArgs>
+							<arg>-Amicronaut.processing.group=${project.groupId}</arg>
+							<arg>-Amicronaut.processing.module=${project.artifactId}</arg>
+						</compilerArgs>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.0.0-M5</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>

@@ -1,0 +1,16 @@
+micronaut:
+  application:
+    name: ${project.artifactId}
+    version: ${project.version}
+  
+  server:
+    cors:
+      enabled: true
+    
+  metrics:
+    enabled: true
+
+endpoints:
+  all:
+    enabled: true
+    path: /endpoints

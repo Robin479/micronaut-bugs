@@ -1,0 +1,9 @@
+micronaut:
+  http:
+    client:
+      read-timeout: 60m # long timeout to allow manual debugging
+
+logger:
+  levels:
+    de.ooch.micronaut.bugs.RunawayServerMetricsTest: TRACE
+    de.ooch.micronaut.bugs.RunawayClientMetricsTest: TRACE
