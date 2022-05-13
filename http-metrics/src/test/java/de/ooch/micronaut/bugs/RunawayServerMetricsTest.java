@@ -44,4 +44,25 @@ public class RunawayServerMetricsTest {
 			"input from user requests (including their URI) should not appear in http.server.requests metrics"
 		);
 	}
+	
+	@Test
+	public void testUnmatchedRequestsDontProduceRunawayServerMetrics() {
+		final MutableHttpRequest<?> preflight = HttpRequest //
+			.OPTIONS("/unmatched-faulty-request-should-not-appear-in-server-metrics")
+			.header(HttpHeaders.ORIGIN, "http://localhost")
+			.header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET")
+			.header(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "Authorization");
+		
+		final HttpResponse<?> response = this.client.toBlocking().exchange(preflight);
+		Preconditions.condition(response.code() == 200, "unmatched CORS preflight should have succeeded, nonetheless");
+		
+		final HttpResponse<String> scrape = this.client.toBlocking().exchange("/endpoints/prometheus", String.class);
+		
+		RunawayServerMetricsTest.log.trace("prometheus scrape:\n{}", scrape.body());
+		
+		Assertions.assertFalse(
+			scrape.body().replaceAll("(?m)^(?!http_server_requests_).*?$", "").contains(preflight.getUri().getPath()),
+			"input from user requests (including faulty URIs) should not appear in http.server.requests metrics"
+		);
+	}
 }
